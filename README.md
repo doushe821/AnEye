@@ -19,6 +19,6 @@
 ---
 
 ```bash
-git clone https://github.com/you/AnEye.git
+git clone https://github.com/doushe821/AnEye.git
 (don't clone it)
 ```
