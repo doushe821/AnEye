@@ -1,55 +1,31 @@
-import "dotenv/config"
+// okay, i want to build an agent with rag
+// even though, i don't know typescript hahah
 
-import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory"
-import { OpenAIEmbeddings }  from "@langchain/openai"
+// so, let's think more. what do i need?
 
-import * as z from "zod"
-import { tool } from "@langchain/core/tools"
-import { SystemMessage } from "@langchain/core/messages"
-import { createAgent } from "langchain"
+// 1. i need a document (got it)
+// 2. i need to extract text from it
+// 3. then convert into embeddings
 
-const embeddings = new OpenAIEmbeddings({
-    model: "text-embedding-3-large"
-});
-const vectorStore = new MemoryVectorStore(embeddings);
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+import { RecursiveCharacterTextSplitter } from "la"
 
-const retrieveSchema = z.object({ query: z.string() });
-
-const retrieve = tool(
-    async ({ query }) => {
-        const retrievedDocs = await vectorStore.similaritySearch(query, 2);
-        const serialized = retrievedDocs.map(
-            (doc) => "Source: ${doc.metadata.source}\nContent: ${doc.pageContent}"
-        ).join("\n")
-        return [serialized, retrievedDocs]
-    },
-    {
-        name: "retrieve",
-        description: "Retrieve info related to a query",
-        schema: retrieveSchema,
-        responseFormat: "content_and_artifact",
+async function readPDF(filePath : string) {
+    const loadingTask = pdfjsLib.getDocument(filePath);
+    const pdf = await loadingTask.promise;
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        content.items.forEach((item: any) => {
+            text += item.str
+        });
     }
-);
+    return text;
+}
 
-const tools = [retrieve];
-const sysPrompt = new SystemMessage(
-    "You got the access to a tool that helps to retrieve context from a document." +
-    "Use this tool to help answer user queries."
-)
-
-const agent = createAgent({model: "gpt-5", tools, sysPrompt})
-
-// ------------------------------------------------------------
-
-let input = "How to learn faster any language or skill faster ? ? ?"
-let agentInput = {messages : [{role: "user", content: input}]};
-
-const stream = await agent.stream(agentInput,  {
-    streamMode : "values",
-});
-
-for await (const step of stream) {
-    const lastMessage = step.messages[step.messages.length - 1];
-    console.log('[$(lastMessage.role)]: $(lastMessage.content)');
+async function splitText(text, chunkSize, overlap) {
 
 }
+
+readPDF("./Documents/BEBRA.pdf")
