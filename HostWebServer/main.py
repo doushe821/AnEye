@@ -7,7 +7,7 @@ app = Flask(name)
 
 @app.route('/upload', methods=['POST'])
 def upload_image():
-    if request.data and request.content_type and 'image' in request.content_type:
+    if request.data and request.content_type:
         if not os.path.exists('uploads'):
             os.makedirs('uploads')
 
