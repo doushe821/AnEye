@@ -3,4 +3,4 @@ dotenv
 questionary
 einops
 pypdf
-chromadb
+logging

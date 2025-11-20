@@ -10,7 +10,7 @@ def upload_image():
     if request.data and request.content_type:
         if not os.path.exists('uploads'):
             os.makedirs('uploads')
-
+        print(request)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"uploads/capture_{timestamp}.jpg"
 
