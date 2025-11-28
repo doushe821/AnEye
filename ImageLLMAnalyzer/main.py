@@ -119,7 +119,7 @@ def encode_image(image_path):
         elif image_path.lower().endswith(".webp"):
             mime_type = "image/webp"
 
-        encoded = base64.b64encode(image_file.read()).decode('utf-8')
+        encoded = base64.b64enco`de(image_file.read()).decode('utf-8')
         return f"data:{mime_type};base64,{encoded}"
 
 

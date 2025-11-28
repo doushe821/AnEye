@@ -4,3 +4,4 @@ questionary
 einops
 pypdf
 logging
+python-telegram-bot
