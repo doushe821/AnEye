@@ -34,7 +34,7 @@ bot = Bot(token=BOT_TOKEN)
 
 def find_image_for_txt(txt_path: Path) -> Optional[Path]:
     """Ищет изображение с тем же stem в IMAGES_DIR."""
-    stem = txt_path.stem.rsplit("_response")  # например: capture_20251128_182611_response
+    stem = txt_path.stem.rstrip("_response")  # например: capture_20251128_182611_response
     print(stem)
     for ext in [".png", ".jpg", ".jpeg", ".webp", ".gif"]:
         img_path = IMAGES_DIR / (stem + ext)
