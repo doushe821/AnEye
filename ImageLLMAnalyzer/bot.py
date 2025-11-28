@@ -88,7 +88,7 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
 
     return successfully_sent_to_all
 
-async def process_and_move(txt_path: Path, img_path: Path | None):
+async def process_and_move(txt_path: Path, img_path: Optional[Path]):
     success = await send_file_pair(txt_path, img_path)
 
     if success:
