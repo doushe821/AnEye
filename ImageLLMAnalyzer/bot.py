@@ -5,6 +5,7 @@ from pathlib import Path
 from telegram import Bot
 from telegram.error import TelegramError
 from dotenv import load_dotenv
+from typing import Optional
 
 load_dotenv()
 
@@ -31,7 +32,7 @@ PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
 bot = Bot(token=BOT_TOKEN)
 
-def find_image_for_txt(txt_path: Path) -> Path | None:
+def find_image_for_txt(txt_path: Path) -> Optional[Path]:
     """Ищет изображение с тем же stem в IMAGES_DIR."""
     stem = txt_path.stem  # например: capture_20251128_182611_response
     for ext in [".png", ".jpg", ".jpeg", ".webp", ".gif"]:
