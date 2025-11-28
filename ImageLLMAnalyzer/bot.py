@@ -44,7 +44,7 @@ def find_image_for_txt(txt_path: Path) -> Optional[Path]:
 def get_txt_files():
     return sorted(WATCH_DIR.glob("*.txt"))
 
-async def send_file_pair(txt_path: Path, img_path: Path | None):
+async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
     """Отправляет .txt и (опционально) изображение из IMAGES_DIR."""
     try:
         content = txt_path.read_text(encoding='utf-8')
