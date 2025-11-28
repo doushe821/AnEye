@@ -32,6 +32,25 @@ bot = Bot(token=BOT_TOKEN)
 def get_txt_files():
     return sorted(WATCH_DIR.glob("*.txt"))
 
+def split_text(text, limit=4096):
+    """Разбивает текст на части по limit символов с учётом границ строк."""
+    parts = []
+    while text:
+        if len(text) <= limit:
+            parts.append(text)
+            break
+        # Находим ближайший перевод строки перед лимитом
+        split_pos = text.rfind('\n', 0, limit)
+        if split_pos == -1:
+            split_pos = limit
+        parts.append(text[:split_pos])
+        text = text[split_pos:].lstrip('\n')
+    return parts
+
+# В send_file_content:
+for part in split_text(content):
+    await bot.send_message(chat_id=chat_id, text=part)
+
 async def send_file_content(file_path: Path):
     """Отправляет файл и перемещает его в PROCESSED_DIR после успеха."""
     try:
@@ -42,12 +61,10 @@ async def send_file_content(file_path: Path):
     successfully_sent_to_all = True
     for chat_id in CHAT_IDS:
         try:
-            await bot.send_message(
-                chat_id=chat_id,
-                text=f"📄 <b>{file_path.name}</b>\n\n{content}",
-                parse_mode="HTML"
-            )
-            print(f"Отправлено в чат {chat_id}: {file_path.name}")
+
+            for part in split_text(content):
+                await bot.send_message(chat_id=chat_id, text=part)
+                print(f"Отправлено в чат {chat_id}: {file_path.name}")
         except TelegramError as e:
             print(f"Ошибка отправки в чат {chat_id}: {e}")
             successfully_sent_to_all = False  # не отправлено хотя бы одному — не перемещаем
