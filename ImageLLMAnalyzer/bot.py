@@ -47,10 +47,6 @@ def split_text(text, limit=4096):
         text = text[split_pos:].lstrip('\n')
     return parts
 
-# В send_file_content:
-for part in split_text(content):
-    await bot.send_message(chat_id=chat_id, text=part)
-
 async def send_file_content(file_path: Path):
     """Отправляет файл и перемещает его в PROCESSED_DIR после успеха."""
     try:
@@ -61,10 +57,10 @@ async def send_file_content(file_path: Path):
     successfully_sent_to_all = True
     for chat_id in CHAT_IDS:
         try:
-
             for part in split_text(content):
                 await bot.send_message(chat_id=chat_id, text=part)
                 print(f"Отправлено в чат {chat_id}: {file_path.name}")
+
         except TelegramError as e:
             print(f"Ошибка отправки в чат {chat_id}: {e}")
             successfully_sent_to_all = False  # не отправлено хотя бы одному — не перемещаем
