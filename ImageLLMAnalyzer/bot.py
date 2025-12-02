@@ -33,8 +33,7 @@ PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 bot = Bot(token=BOT_TOKEN)
 
 def find_image_for_txt(txt_path: Path) -> Optional[Path]:
-    """Ищет изображение с тем же stem в IMAGES_DIR."""
-    stem = txt_path.stem.rstrip("_response")  # например: capture_20251128_182611_response
+    stem = txt_path.stem.rstrip("_response")
     print(stem)
     for ext in [".png", ".jpg", ".jpeg", ".webp", ".gif"]:
         img_path = IMAGES_DIR / (stem + ext)
@@ -47,7 +46,6 @@ def get_txt_files():
     return sorted(WATCH_DIR.glob("*.txt"))
 
 async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
-    """Отправляет .txt и (опционально) изображение из IMAGES_DIR."""
     try:
         content = txt_path.read_text(encoding='utf-8')
     except Exception as e:
@@ -57,7 +55,6 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
 
     for chat_id in CHAT_IDS:
         try:
-            # Отправка текста
             if len(content) <= 4096:
                 await bot.send_message(
                     chat_id=chat_id,
@@ -69,12 +66,11 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
                 await bot.send_message(
                     chat_id=chat_id,
                     text=f"📄 <b>{txt_path.name}</b>\n\n{preview}",
-                    parse_mode="HTML"
+                    parse_mode="MARKDOWN"
                 )
                 with open(txt_path, 'rb') as f:
                     await bot.send_document(chat_id=chat_id, document=f)
 
-            # Отправка изображения, если найдено
             if img_path:
                 with open(img_path, 'rb') as img_f:
                     await bot.send_photo(
