@@ -135,14 +135,14 @@ def get_ai_response(image_path):
     completion = client.chat.completions.create(
 
     extra_body={},
-    model="google/gemini-2.5-flash-image",
+    model="google/gemini-3-pro-image-preview",
     messages=[
         {
         "role": "user",
         "content": [
             {
             "type": "text",
-            "text": TECHNICAL_PROMPT
+            "text": TECHNICAL_PROMPT.stip()
             },
             {
             "type": "image_url",
