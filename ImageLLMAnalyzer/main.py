@@ -142,7 +142,7 @@ def get_ai_response(image_path):
         "content": [
             {
             "type": "text",
-            "text": TECHNICAL_PROMPT.stip()
+            "text": TECHNICAL_PROMPT.strip()
             },
             {
             "type": "image_url",
