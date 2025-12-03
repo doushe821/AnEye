@@ -138,7 +138,7 @@ def get_ai_response(image_path):
     messages=[
         {
             "role": "system",
-            "content": "You are a hardware identification assistant that strictly follows formatting rules. You only identify components based on visible markings."
+            "content": "You are a hardware identification assistant helps people to know about the devices."
         },
         {
             "role": "user",
