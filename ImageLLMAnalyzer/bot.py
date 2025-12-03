@@ -65,11 +65,13 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
                 return None
 
             import re
-            match = re.search(r'\[([^\]]+)\]', first_line)
-            if match:
-                search_term = match.group(1).strip()
-            else:
-                search_term = first_line.strip()
+            for line in lines:
+                match = re.search(r'\[([^\]]+)\]', first_line)
+                if match:
+                    search_term = match.group(1).strip()
+                    break
+                else:
+                    search_term = first_line.strip()
 
             docs_dir = Path("docs")
             if not docs_dir.exists():
