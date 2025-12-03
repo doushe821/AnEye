@@ -76,6 +76,7 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
                 print("docs_dir doesn't exist")
                 return None
 
+            print(list(docs_dir.glob("*.pdf")))
             for pdf_file in docs_dir.glob("*.pdf"):
                 pdf_name = pdf_file.stem
                 score = similar(search_term, pdf_name)
@@ -92,6 +93,7 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
             if best_score >= FILENAME_THRESHOLD:
                 print(f"📕 Best Document found is {best_match}")
                 return best_match
+
         return None
 
     except Exception as e:
