@@ -147,10 +147,12 @@ def get_ai_response(image_path):
             {
             "type": "image_url",
             "image_url": {
-                "url": f"{image_url}"
+                "url": image_url
             }
             }
         ]
+        temperature=0.0,
+        max_tokens=500,
         }
     ]
     )
