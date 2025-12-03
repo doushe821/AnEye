@@ -6,6 +6,7 @@ from telegram import Bot
 from telegram.error import TelegramError
 from dotenv import load_dotenv
 from typing import Optional
+import re
 
 load_dotenv()
 
@@ -45,6 +46,10 @@ def find_image_for_txt(txt_path: Path) -> Optional[Path]:
 def get_txt_files():
     return sorted(WATCH_DIR.glob("*.txt"))
 
+def escape_markdown_v2(text: str) -> str:
+    escape_chars = r'_*[]()~`>#+-=|{}.!'
+    return re.sub(f'([{re.escape(escape_chars)}])', r'\\\1', text)
+
 async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
     try:
         content = txt_path.read_text(encoding='utf-8')
@@ -58,8 +63,8 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
             if len(content) <= 4096:
                 await bot.send_message(
                     chat_id=chat_id,
-                    text=f"📄 <b>{txt_path.name}</b>\n\n{content}",
-                    parse_mode="HTML"
+                    text=f"📄 {txt_path.name}\n\n{content}",
+                    parse_mode="MarkdownV2"
                 )
             else:
                 preview = content[:4000] + "\n\n[... полный текст во вложении]"
