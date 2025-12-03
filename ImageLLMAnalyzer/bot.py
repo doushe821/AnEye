@@ -86,6 +86,7 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
 
     return successfully_sent_to_all
 
+
 async def process_and_move(txt_path: Path, img_path: Optional[Path]):
     success = await send_file_pair(txt_path, img_path)
 
@@ -114,7 +115,9 @@ async def main():
     print(f"🖼 IMG из: {IMAGES_DIR}")
     print(f"📤 Всё в: {PROCESSED_DIR}")
     print(f"👥 Получатели: {CHAT_IDS}")
-    await watch_folder()
+    await asyncio.gather(
+        watch_folder(),
+    )
 
 if __name__ == "__main__":
     asyncio.run(main())
