@@ -181,7 +181,7 @@ def process_new_images(image_dir: Path, processed_dir: Path, prompts: Path):
 
 if __name__ == "__main__":
 
-    image_dir = Path("uploads")
+    image_dir = Path("../HostWebServer/uploads")
     processed = Path("processed")
     prompts = Path("processed/prompts")
     processed_img = Path("processed/img")

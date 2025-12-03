@@ -9,6 +9,7 @@ from typing import Optional
 import re
 import html
 from constants import *
+from difflib import SequenceMatcher
 
 load_dotenv()
 
@@ -19,6 +20,7 @@ WATCH_DIR_STR = os.getenv("WATCH_DIR", "./prompts")
 IMAGES_DIR_STR = os.getenv("IMAGES_DIR", "./processed/img")      # ← новая переменная
 PROCESSED_DIR_STR = os.getenv("PROCESSED_DIR", "./prompt_succeed")
 CHECK_INTERVAL = 5
+FILENAME_THRESHOLD = 0.6
 
 if not BOT_TOKEN:
     raise ValueError("TELEGRAM_BOT_TOKEN не задан в .env")
@@ -35,6 +37,11 @@ PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
 bot = Bot(token=BOT_TOKEN)
 
+
+def similar(a: str, b: str) -> float:
+    """Возвращает коэффициент схожести между двумя строками (0.0-1.0)"""
+    return SequenceMatcher(None, a.lower(), b.lower()).ratio()
+
 def find_image_for_txt(txt_path: Path) -> Optional[Path]:
     stem = txt_path.stem.rstrip("_response")
     print(stem)
@@ -45,6 +52,51 @@ def find_image_for_txt(txt_path: Path) -> Optional[Path]:
             return img_path
     return None
 
+def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
+    """Находит PDF файл в директории docs по первой строке TXT файла"""
+    try:
+        with open(txt_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+            if not lines:
+                return None
+
+            first_line = lines[0].strip()
+            if not first_line:
+                return None
+
+            import re
+            match = re.search(r'\[([^\]]+)\]', first_line)
+            if match:
+                search_term = match.group(1).strip()
+            else:
+                search_term = first_line.strip()
+
+            docs_dir = Path("docs")
+            if not docs_dir.exists():
+                return None
+
+            for pdf_file in docs_dir.glob("*.pdf"):
+                pdf_name = pdf_file.stem
+                score = similar(search_term, pdf_name)
+
+                if score >= 0.95:
+                    print(f"📕 FOUND APPROPRIATE DOCUMENT {pdf_name}")
+                    return pdf_file
+
+                if score > best_score:
+                    best_score = score
+                    best_match = pdf_file
+
+            if best_score >= FILENAME_THRESHOLD:
+                print(f"📕 Best Document found is {best_match}")
+                return best_match
+        return None
+
+    except Exception as e:
+        print(f"Ошибка при поиске PDF для {txt_path}: {e}")
+
+    return None
+
 def get_txt_files():
     return sorted(WATCH_DIR.glob("*.txt"))
 
@@ -52,7 +104,7 @@ def escape_markdown_v2(text: str) -> str:
     escape_chars = r'_*[]()~`>#+-=|{}.!'
     return re.sub(f'([{re.escape(escape_chars)}])', r'\\\1', text)
 
-async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
+async def send_file_pair(txt_path: Path, img_path: Optional[Path], pdf_path: Optional[Path]):
     try:
         content = txt_path.read_text(encoding='utf-8')
     except Exception as e:
@@ -89,6 +141,15 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
                         photo=img_f,
                         caption=f"🖼 {img_path.name}"
                     )
+            if pdf_path:
+                with open(pdf_path, 'rb') as pdf_f:
+                    await bot.send_document(
+                        chat_id=chat_id
+                        document=pdf_f,
+                        filename=pdf_path.name,
+                        caption=f"📄 {pdf_path.name}"
+                        )
+                    print(f"✅ PDF отправлен: {pdf_path.name}")
 
             print(f"✅ Отправлено в чат {chat_id}: {txt_path.name}" + (f" + {img_path.name}" if img_path else ""))
         except TelegramError as e:
@@ -98,8 +159,8 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
     return successfully_sent_to_all
 
 
-async def process_and_move(txt_path: Path, img_path: Optional[Path]):
-    success = await send_file_pair(txt_path, img_path)
+async def process_and_move(txt_path: Path, img_path: Optional[Path], pdf_file : Optional[Path]):
+    success = await send_file_pair(txt_path, img_path, pdf_file)
 
     if success:
         # Перемещаем .txt из WATCH_DIR → PROCESSED_DIR
@@ -117,7 +178,8 @@ async def watch_folder():
     while True:
         for txt_file in get_txt_files():
             img_file = find_image_for_txt(txt_file)
-            await process_and_move(txt_file, img_file)
+            pdf = find_pdf_for_txt(txt_file)
+            await process_and_move(txt_file, img_file, pdf)
         await asyncio.sleep(CHECK_INTERVAL)
 
 async def main():
