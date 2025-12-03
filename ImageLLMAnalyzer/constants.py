@@ -3,32 +3,25 @@ from pathlib import Path
 DOCS_EXTENSIONS = [".pdf"]
 IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".bmp", "webp"]
 
-TECHNICAL_PROMPT = "\n".join([
-    "Please analyze this electronic component and identify it based on visible markings.",
-    "If you can clearly see part numbers, manufacturer logos, or other identifying marks, provide:",
-    "1. The official device name in brackets on the first line: [DEVICE_NAME]",
-    "2. Details about the component",
-    "",
-    "If you cannot confidently identify the device from visible markings, start with: [UNKNOWN DEVICE]",
-    "",
-    "Guidelines for analysis:",
-    "- Focus on visible text, symbols, and standardized markings",
-    "- Avoid speculation based on appearance alone",
-    "- If part numbers or manufacturer logos are visible, try to identify the specific component",
-    "",
-    "When you identify a device, please include:",
-    "• Full part number (if visible)",
-    "• Manufacturer (if identifiable)",
-    "• Package type (if discernible)",
-    "• Key specifications that can be determined from markings",
-    "",
-    "Example format when a device is identified:",
-    "[STM32F407VGT6]",
-    "• Full part number: STM32F407VGT6",
-    "• Manufacturer: STMicroelectronics",
-    "• Package type: LQFP-100",
-    "• Key specs: ARM Cortex-M4, 168 MHz, 1MB Flash"
-])
+TECHNICAL_PROMPT = """
+Let's play a guessing game! What do you think this electronic component might be?
+
+Make an educated guess based on:
+- What it resembles
+- Your electronics knowledge
+- Similar things you've seen
+
+Format your answer however you like. Just have fun with it!
+
+Examples of what you could say:
+"Hmm, this looks like it could be an Arduino Nano to me - small size, lots of pins, USB connector."
+
+"I'm seeing something that reminds me of a Wi-Fi module. Maybe an ESP8266 or similar?"
+
+"If I had to guess, I'd say this is some kind of power MOSFET in a TO-220 package."
+
+"On the first line - leave your best guess in capital letters like this: [DEVICE]"
+"""
 IMAGE_DIR = Path("images/")
 DOCS_DIR = Path("docs/")
 MODEL_NAME="text-embedding-3-small"
