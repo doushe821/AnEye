@@ -132,45 +132,36 @@ def get_ai_response(image_path):
     base_url="https://openrouter.ai/api/v1",
     api_key=API_KEY,
     )
-    test_completion = client.chat.completions.create(
+
+    print(TECHNICAL_PROMPT)
+
+    completion = client.chat.completions.create(
     model="google/gemini-3-pro-image-preview",
     messages=[
         {
+            "role": "system",
+            "content": "You are a hardware identification assistant that strictly follows formatting rules. You only identify components based on visible markings."
+        },
+        {
             "role": "user",
-            "content": "Respond with exactly: [TEST_PASSED] and nothing else."
+            "content": [
+                {
+                    "type": "text",
+                    "text": TECHNICAL_PROMPT.strip()
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": image_url
+                    }
+                }
+            ]
         }
     ],
     temperature=0.0,
-    max_tokens=50
-)
-    return test_completion.choices[0].message.content)
-    # completion = client.chat.completions.create(
-    # model="google/gemini-3-pro-image-preview",
-    # messages=[
-    #     {
-    #         "role": "system",
-    #         "content": "You are a hardware identification assistant that strictly follows formatting rules. You only identify components based on visible markings."
-    #     },
-    #     {
-    #         "role": "user",
-    #         "content": [
-    #             {
-    #                 "type": "text",
-    #                 "text": TECHNICAL_PROMPT.strip()
-    #             },
-    #             {
-    #                 "type": "image_url",
-    #                 "image_url": {
-    #                     "url": image_url
-    #                 }
-    #             }
-    #         ]
-    #     }
-    # ],
-    # temperature=0.0,
-    # max_tokens=500
-    # )
-    # return completion.choices[0].message.content
+    max_tokens=500
+    )
+    return completion.choices[0].message.content
 
 def process_new_images(image_dir: Path, processed_dir: Path, prompts: Path):
     images = get_img(image_dir)
