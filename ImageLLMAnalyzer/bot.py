@@ -92,11 +92,10 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
                         print(f"📕 FOUND APPROPRIATE DOCUMENT {pdf_name}")
                         pdf_paths.append([pdf_file, score])
 
-                    if score > best_score and score > FILENAME_THRESHOLD:
+                    if score > best_score:
                         best_score = score
                         best_match = pdf_file
                         pdf_paths.append([best_match, best_score])
-                    pdf_paths.append([best_match, best_score])
 
 
             # print(f"BEST_SCORE IS - {best_score}")
