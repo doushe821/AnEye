@@ -77,6 +77,7 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
                 return None
 
             print(list(docs_dir.glob("*.pdf")))
+            best_score = 0
             for pdf_file in docs_dir.glob("*.pdf"):
                 pdf_name = pdf_file.stem
                 score = similar(search_term, pdf_name)
