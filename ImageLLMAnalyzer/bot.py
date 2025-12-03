@@ -83,7 +83,7 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
             for pdf_file in docs_dir.glob("*.pdf"):
                 pdf_name = pdf_file.stem
                 score = similar(search_term, pdf_name)
-                print(f"PDF_FILE - {pdf_name}, LINE - {first_line} => SCORE - {score}")
+                print(f"PDF_FILE - {pdf_name} => SCORE - {score}")
 
                 if score >= 0.95:
                     print(f"📕 FOUND APPROPRIATE DOCUMENT {pdf_name}")
