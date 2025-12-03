@@ -66,7 +66,7 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
 
             import re
             for line in lines:
-                match = re.search(r'\[([^\]]+)\]', first_line)
+                match = re.search(r'\[([^\]]+)\]', line)
                 if match:
                     search_term = match.group(1).strip()
                     break
