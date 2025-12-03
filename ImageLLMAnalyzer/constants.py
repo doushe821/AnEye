@@ -9,7 +9,7 @@ TECHNICAL_PROMPT = "\n".join([
     "1. The official device name in brackets on the first line: [DEVICE_NAME]",
     "2. Details about the component",
     "",
-    "If you cannot confidently identify the device from visible markings, start with: [UNKNOWN DEVICE]",
+    "If you cannot confidently identify the device from visible markings, start with the most suitable device.",
     "",
     "Guidelines for analysis:",
     "- Focus on visible text, symbols, and standardized markings",
