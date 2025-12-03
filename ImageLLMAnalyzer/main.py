@@ -156,7 +156,6 @@ def get_ai_response(image_path):
             ]
         }
     ],
-    temperature=0.0,
     max_tokens=500
     )
     return completion.choices[0].message.content
