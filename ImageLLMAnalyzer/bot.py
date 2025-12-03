@@ -5,7 +5,7 @@ from pathlib import Path
 from telegram import Bot
 from telegram.error import TelegramError
 from dotenv import load_dotenv
-from typing import Optional
+from typing import Optional, List
 import re
 import html
 from constants import *
@@ -171,7 +171,7 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path], pdf_path: Opt
     return successfully_sent_to_all
 
 
-async def process_and_move(txt_path: Path, img_path: Optional[Path], pdf_list : list[Optional[Path]]):
+async def process_and_move(txt_path: Path, img_path: Optional[Path], pdf_list : List[Optional[Path]]):
     for pdf_file in pdf_list:
         success = await send_file_pair(txt_path, img_path, pdf_file)
 
