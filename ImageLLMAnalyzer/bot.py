@@ -20,7 +20,7 @@ WATCH_DIR_STR = os.getenv("WATCH_DIR", "./prompts")
 IMAGES_DIR_STR = os.getenv("IMAGES_DIR", "./processed/img")      # ← новая переменная
 PROCESSED_DIR_STR = os.getenv("PROCESSED_DIR", "./prompt_succeed")
 CHECK_INTERVAL = 5
-FILENAME_THRESHOLD = 0.48
+FILENAME_THRESHOLD = 0.4
 
 if not BOT_TOKEN:
     raise ValueError("TELEGRAM_BOT_TOKEN не задан в .env")
