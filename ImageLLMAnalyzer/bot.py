@@ -80,6 +80,7 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
             pdf_paths = list()
             print(list(docs_dir.glob("*.pdf")))
             best_score = 0
+            best_match = Path()
             print("\n".join(lines))
             for component in component_names:
                 for pdf_file in docs_dir.glob("*.pdf"):
@@ -97,8 +98,8 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
                         pdf_paths.append([best_match, best_score])
 
 
-            print(f"BEST_SCORE IS - {best_score}")
-            print(f"BEST_MATCH IS - {best_match}")
+            # print(f"BEST_SCORE IS - {best_score}")
+            # print(f"BEST_MATCH IS - {best_match}")
             if best_score >= FILENAME_THRESHOLD:
                 print(f"📕 Best Document found is {best_match}")
                 pdf_paths.append([best_match, best_score])
