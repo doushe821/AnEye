@@ -28,6 +28,7 @@ TECHNICAL_PROMPT = "\n".join([
     "• Manufacturer: STMicroelectronics",
     "• Package type: LQFP-100",
     "• Key specs: ARM Cortex-M4, 168 MHz, 1MB Flash"
+    "IF YOU USE ANY NAMES - PLEASE MARK THEM LIKE THAT [NAME]"
 ])
 IMAGE_DIR = Path("images/")
 DOCS_DIR = Path("docs/")

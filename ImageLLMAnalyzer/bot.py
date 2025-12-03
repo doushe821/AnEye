@@ -59,7 +59,7 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
             lines = f.readlines()
             if not lines:
                 return None
-
+            component_names = []
             first_line = lines[0].strip()
             if not first_line:
                 return None
@@ -69,7 +69,7 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
                 match = re.search(r'\[([^\]]+)\]', line)
                 if match:
                     search_term = match.group(1).strip()
-                    break
+                    component_names.append(search_term)
                 else:
                     search_term = first_line.strip()
 
@@ -77,29 +77,32 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
             if not docs_dir.exists():
                 print("docs_dir doesn't exist")
                 return None
-
+            pdf_paths = set()
             print(list(docs_dir.glob("*.pdf")))
             best_score = 0
-            for pdf_file in docs_dir.glob("*.pdf"):
-                pdf_name = pdf_file.stem
-                score = similar(search_term, pdf_name)
-                print(f"PDF_FILE - {pdf_name} => SCORE - {score}")
+            for component in component_names:
+                for pdf_file in docs_dir.glob("*.pdf"):
+                    pdf_name = pdf_file.stem
+                    score = similar(component, pdf_name)
+                    print(f"PDF_FILE - {pdf_name} => SCORE - {score}")
 
-                if score >= 0.95:
-                    print(f"📕 FOUND APPROPRIATE DOCUMENT {pdf_name}")
-                    return pdf_file
+                    if score >= 0.95:
+                        print(f"📕 FOUND APPROPRIATE DOCUMENT {pdf_name}")
+                        pdf_paths.append(pdf_file)
 
-                if score > best_score:
-                    best_score = score
-                    best_match = pdf_file
+                    if score > best_score and score > FILENAME_THRESHOLD:
+                        best_score = score
+                        best_match = pdf_file
+                        pdf_paths.append(best_match)
+
 
             print(f"BEST_SCORE IS - {best_score}")
             print(f"BEST_MATCH IS - {best_match}")
             if best_score >= FILENAME_THRESHOLD:
                 print(f"📕 Best Document found is {best_match}")
-                return best_match
+                pdf_paths.append(best_match)
 
-        return None
+        return sorted(list(pdf_paths))
 
     except Exception as e:
         print(f"Ошибка при поиске PDF для {txt_path}: {e}")
@@ -168,8 +171,9 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path], pdf_path: Opt
     return successfully_sent_to_all
 
 
-async def process_and_move(txt_path: Path, img_path: Optional[Path], pdf_file : Optional[Path]):
-    success = await send_file_pair(txt_path, img_path, pdf_file)
+async def process_and_move(txt_path: Path, img_path: Optional[Path], pdf_list : list[Optional[Path]]):
+    for pdf_file in pdf_list:
+        success = await send_file_pair(txt_path, img_path, pdf_file)
 
     if success:
         # Перемещаем .txt из WATCH_DIR → PROCESSED_DIR
@@ -187,8 +191,8 @@ async def watch_folder():
     while True:
         for txt_file in get_txt_files():
             img_file = find_image_for_txt(txt_file)
-            pdf = find_pdf_for_txt(txt_file)
-            await process_and_move(txt_file, img_file, pdf)
+            pdf_list = find_pdf_for_txt(txt_file)
+            await process_and_move(txt_file, img_file, pdf_list)
         await asyncio.sleep(CHECK_INTERVAL)
 
 async def main():
