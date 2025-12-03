@@ -96,6 +96,7 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
                         best_score = score
                         best_match = pdf_file
                         pdf_paths.append([best_match, best_score])
+                    pdf_paths.append([best_match, best_score])
 
 
             # print(f"BEST_SCORE IS - {best_score}")
