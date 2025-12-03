@@ -121,6 +121,7 @@ async def watch_folder():
 
 async def main():
     print("✅ Бот запущен.")
+    print(TECHNICAL_PROMPT)
     print(f"📥 TXT из: {WATCH_DIR}")
     print(f"🖼 IMG из: {IMAGES_DIR}")
     print(f"📤 Всё в: {PROCESSED_DIR}")
