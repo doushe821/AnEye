@@ -133,28 +133,30 @@ def get_ai_response(image_path):
     api_key=API_KEY,
     )
     completion = client.chat.completions.create(
-
-    extra_body={},
     model="google/gemini-3-pro-image-preview",
     messages=[
         {
-        "role": "user",
-        "content": [
-            {
-            "type": "text",
-            "text": TECHNICAL_PROMPT.strip()
-            },
-            {
-            "type": "image_url",
-            "image_url": {
-                "url": image_url
-            }
-            }
-        ]
-        temperature=0.0,
-        max_tokens=500,
+            "role": "system",
+            "content": "You are a hardware identification assistant that strictly follows formatting rules. You only identify components based on visible markings."
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": TECHNICAL_PROMPT.strip()
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": image_url
+                    }
+                }
+            ]
         }
-    ]
+    ],
+    temperature=0.0,
+    max_tokens=500
     )
     return completion.choices[0].message.content
 
