@@ -77,9 +77,10 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
             if not docs_dir.exists():
                 print("docs_dir doesn't exist")
                 return None
-            pdf_paths = set()
+            pdf_paths = list()
             print(list(docs_dir.glob("*.pdf")))
             best_score = 0
+            print("\n".join(lines))
             for component in component_names:
                 for pdf_file in docs_dir.glob("*.pdf"):
                     pdf_name = pdf_file.stem
@@ -88,21 +89,22 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
 
                     if score >= 0.95:
                         print(f"📕 FOUND APPROPRIATE DOCUMENT {pdf_name}")
-                        pdf_paths.append(pdf_file)
+                        pdf_paths.append([pdf_file, score])
 
                     if score > best_score and score > FILENAME_THRESHOLD:
                         best_score = score
                         best_match = pdf_file
-                        pdf_paths.append(best_match)
+                        pdf_paths.append([best_match, best_score])
 
 
             print(f"BEST_SCORE IS - {best_score}")
             print(f"BEST_MATCH IS - {best_match}")
             if best_score >= FILENAME_THRESHOLD:
                 print(f"📕 Best Document found is {best_match}")
-                pdf_paths.append(best_match)
+                pdf_paths.append([best_match, best_score])
 
-        return sorted(list(pdf_paths))
+        if (pdf_paths):
+            return max(pdf_paths, key=lambda x: x[1])
 
     except Exception as e:
         print(f"Ошибка при поиске PDF для {txt_path}: {e}")
