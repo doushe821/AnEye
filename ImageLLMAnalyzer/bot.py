@@ -91,7 +91,7 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
 
             print(f"✅ Отправлено в чат {chat_id}: {txt_path.name}" + (f" + {img_path.name}" if img_path else ""))
         except TelegramError as e:
-            print(f"❌ Ошибка отправки в чат {chat_id}: {e}")
+            print(f"❌ Ошибка отправки в чат {chat_id}: {e} {safe_content}")
             successfully_sent_to_all = False
 
     return successfully_sent_to_all
