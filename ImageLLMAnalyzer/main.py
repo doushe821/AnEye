@@ -133,8 +133,6 @@ def get_ai_response(image_path):
     api_key=API_KEY,
     )
 
-    print(TECHNICAL_PROMPT)
-
     completion = client.chat.completions.create(
     model="google/gemini-3-pro-image-preview",
     messages=[
