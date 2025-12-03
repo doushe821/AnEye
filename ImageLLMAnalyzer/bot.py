@@ -7,6 +7,7 @@ from telegram.error import TelegramError
 from dotenv import load_dotenv
 from typing import Optional
 import re
+import html
 
 load_dotenv()
 
@@ -61,10 +62,14 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
     for chat_id in CHAT_IDS:
         try:
             if len(content) <= 4096:
+
+                safe_name = html.escape(txt_path.name)
+                safe_content = html.escape(content)
+
                 await bot.send_message(
                     chat_id=chat_id,
-                    text=f"📄 {txt_path.name}\n\n{content}",
-                    parse_mode="MarkdownV2"
+                    text=f"📄 <b>{safe_name}</b>\n\n{safe_content}",
+                    parse_mode="HTML"
                 )
             else:
                 preview = content[:4000] + "\n\n[... полный текст во вложении]"
