@@ -10,9 +10,9 @@ TECHNICAL_PROMPT = """
 
 "ON THE FIRST LINE OF YOUR ANSWER PLACE THE OFFICIAL NAME OF THE DEVICE. "
 "IF YOU DON'T KNOW THE DEVICE, LET THE FIRST LINE BE 'UNKNOWN DEVICE'"
-"""
 
 "Then start your technical answer."
+"""
 IMAGE_DIR = Path("images/")
 DOCS_DIR = Path("docs/")
 MODEL_NAME="text-embedding-3-small"
