@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from typing import Optional
 import re
 import html
+from constants import *
 
 load_dotenv()
 
