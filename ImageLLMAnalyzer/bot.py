@@ -173,9 +173,8 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path], pdf_path: Opt
     return successfully_sent_to_all
 
 
-async def process_and_move(txt_path: Path, img_path: Optional[Path], pdf_list : List[Optional[Path]]):
-    for pdf_file in pdf_list:
-        success = await send_file_pair(txt_path, img_path, pdf_file)
+async def process_and_move(txt_path: Path, img_path: Optional[Path], pdf_list : Optional[Path]):
+    success = await send_file_pair(txt_path, img_path, pdf_file)
 
     if success:
         # Перемещаем .txt из WATCH_DIR → PROCESSED_DIR
@@ -193,8 +192,8 @@ async def watch_folder():
     while True:
         for txt_file in get_txt_files():
             img_file = find_image_for_txt(txt_file)
-            pdf_list = find_pdf_for_txt(txt_file)
-            await process_and_move(txt_file, img_file, pdf_list)
+            pdf_file = find_pdf_for_txt(txt_file)
+            await process_and_move(txt_file, img_file, pdf_file)
         await asyncio.sleep(CHECK_INTERVAL)
 
 async def main():
