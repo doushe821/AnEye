@@ -144,7 +144,7 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path], pdf_path: Opt
             if pdf_path:
                 with open(pdf_path, 'rb') as pdf_f:
                     await bot.send_document(
-                        chat_id=chat_id
+                        chat_id=chat_id,
                         document=pdf_f,
                         filename=pdf_path.name,
                         caption=f"📄 {pdf_path.name}"
