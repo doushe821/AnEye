@@ -105,7 +105,8 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
                 pdf_paths.append([best_match, best_score])
 
         if (pdf_paths):
-            return max(pdf_paths, key=lambda x: x[1])
+            print(f"MAX SCORE is {max(pdf_paths, key=lambda x: x[1])}")
+            return max(pdf_paths, key=lambda x: x[1])[0]
 
     except Exception as e:
         print(f"Ошибка при поиске PDF для {txt_path}: {e}")
