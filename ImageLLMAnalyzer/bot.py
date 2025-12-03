@@ -20,7 +20,7 @@ WATCH_DIR_STR = os.getenv("WATCH_DIR", "./prompts")
 IMAGES_DIR_STR = os.getenv("IMAGES_DIR", "./processed/img")      # ← новая переменная
 PROCESSED_DIR_STR = os.getenv("PROCESSED_DIR", "./prompt_succeed")
 CHECK_INTERVAL = 5
-FILENAME_THRESHOLD = 0.4
+FILENAME_THRESHOLD = float(0.4)
 
 if not BOT_TOKEN:
     raise ValueError("TELEGRAM_BOT_TOKEN не задан в .env")
@@ -93,6 +93,8 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
                     best_score = score
                     best_match = pdf_file
 
+            print(f"BEST_SCORE IS - {best_score}")
+            print(f"BEST_MATCH IS - {best_match}")
             if best_score >= FILENAME_THRESHOLD:
                 print(f"📕 Best Document found is {best_match}")
                 return best_match
