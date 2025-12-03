@@ -61,10 +61,10 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
 
     for chat_id in CHAT_IDS:
         try:
+            safe_name = html.escape(txt_path.name)
+            safe_content = html.escape(content)
             if len(content) <= 4096:
 
-                safe_name = html.escape(txt_path.name)
-                safe_content = html.escape(content)
 
                 await bot.send_message(
                     chat_id=chat_id,
@@ -72,11 +72,11 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
                     parse_mode="HTML"
                 )
             else:
-                preview = content[:4000] + "\n\n[... полный текст во вложении]"
+                preview = safe_content[:4000] + "\n\n[... полный текст во вложении]"
                 await bot.send_message(
                     chat_id=chat_id,
-                    text=f"📄 <b>{txt_path.name}</b>\n\n{preview}",
-                    parse_mode="MARKDOWN"
+                    text=f"📄 <b>{safe_name}</b>\n\n{preview}",
+                    parse_mode="HTML"
                 )
                 with open(txt_path, 'rb') as f:
                     await bot.send_document(chat_id=chat_id, document=f)
@@ -91,7 +91,7 @@ async def send_file_pair(txt_path: Path, img_path: Optional[Path]):
 
             print(f"✅ Отправлено в чат {chat_id}: {txt_path.name}" + (f" + {img_path.name}" if img_path else ""))
         except TelegramError as e:
-            print(f"❌ Ошибка отправки в чат {chat_id}: {e} {safe_content}")
+            print(f"❌ Ошибка отправки в чат {chat_id}: {e} {content}")
             successfully_sent_to_all = False
 
     return successfully_sent_to_all
