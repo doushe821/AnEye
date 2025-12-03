@@ -73,6 +73,7 @@ def find_pdf_for_txt(txt_path: Path) -> Optional[Path]:
 
             docs_dir = Path("docs")
             if not docs_dir.exists():
+                print("docs_dir doesn't exist")
                 return None
 
             for pdf_file in docs_dir.glob("*.pdf"):
